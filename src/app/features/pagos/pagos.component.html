@@ -1,0 +1,44 @@
+<div class="page-heading">
+  <div><p class="eyebrow">COBROS Y RENOVACIONES</p><h1>Pagos</h1><p class="muted">Registra pagos y renueva las membresías de tus socios.</p></div>
+  <button class="button button-outline" type="button" (click)="cargarOpciones()" [disabled]="loading()"><span>⟳</span> Actualizar</button>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+@if (successMessage()) { <div class="alert alert-success page-alert" role="status"><span>✓</span><p>{{ successMessage() }}</p></div> }
+<div class="split-layout">
+  <section class="panel form-panel">
+    <div class="panel-heading"><div><h2>Registrar pago</h2><p class="muted">Selecciona al socio y el plan que deseas registrar.</p></div><span class="panel-symbol peach">S/</span></div>
+    <form class="form-stack" (ngSubmit)="registrar()">
+      <label class="field"><span>Socio *</span>
+        <select name="paymentMember" [(ngModel)]="form.socioId" required>
+          <option [ngValue]="null" disabled>Selecciona un socio</option>
+          @for (socio of socios(); track socio.id) { <option [ngValue]="socio.id">{{ socio.nombres }} · {{ socio.codigoSocio }}</option> }
+        </select>
+      </label>
+      <label class="field"><span>Plan de membresía *</span>
+        <select name="paymentPlan" [(ngModel)]="form.membresiaId" required>
+          <option [ngValue]="null" disabled>Selecciona un plan</option>
+          @for (plan of membresias(); track plan.id) { <option [ngValue]="plan.id">{{ plan.nombre }} · S/ {{ plan.precio | number:'1.2-2' }}</option> }
+        </select>
+      </label>
+      <div class="info-note"><span>ⓘ</span> El importe corresponde al precio vigente del plan seleccionado.</div>
+      <button class="button button-primary button-wide" type="submit" [disabled]="loading()">Registrar pago <span>→</span></button>
+    </form>
+  </section>
+  <section class="panel payment-info">
+    @if (pagoResultado(); as pago) {
+      <div class="result-success">
+        <span class="result-check">✓</span><p class="eyebrow">PAGO REGISTRADO</p><h2>¡Todo listo!</h2>
+        <p class="muted">La membresía del socio fue actualizada.</p>
+        <div class="receipt">
+          <div><span>Socio</span><strong>{{ pago.codigoSocio }}</strong></div>
+          <div><span>Membresía</span><strong>{{ pago.membresia }}</strong></div>
+          <div><span>Monto</span><strong>S/ {{ pago.monto | number:'1.2-2' }}</strong></div>
+          <div><span>Fecha</span><strong>{{ formatDate(pago.fechaPago) }}</strong></div>
+        </div>
+      </div>
+    } @else {
+      <div class="payment-illustration">✦</div><p class="eyebrow">PAGO SEGURO</p><h2>Una membresía<br />que sigue avanzando</h2>
+      <p class="muted">Al confirmar el cobro, la membresía del socio se renovará conforme a la duración del plan elegido.</p>
+    }
+  </section>
+</div>

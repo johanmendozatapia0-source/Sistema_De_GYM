@@ -1,0 +1,67 @@
+<main class="auth-page">
+  <section class="auth-story">
+    <a class="brand brand-light" routerLink="/login" aria-label="GymFit inicio">
+      <span class="brand-mark">G</span><span>gym<span class="brand-accent">fit</span></span>
+    </a>
+    <div class="story-copy">
+      <p class="eyebrow">TU GIMNASIO, EN CONTROL</p>
+      <h1>Entrena mejor.<br /><span>Administra fácil.</span></h1>
+      <p class="story-description">
+        Socios, membresías y accesos en un solo lugar. Todo listo para que tu
+        comunidad siga avanzando.
+      </p>
+      <div class="story-note"><span class="live-dot"></span> Tu espacio de gestión está listo</div>
+    </div>
+    <div class="story-footer">GYMFIT MANAGEMENT <span>·</span> HECHO PARA CRECER</div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="mobile-brand brand">
+      <span class="brand-mark">G</span><span>gym<span class="brand-accent">fit</span></span>
+    </div>
+    <div class="auth-card">
+      <p class="eyebrow">BIENVENIDO A GYMFIT</p>
+      <h2>{{ loginMode() === 'login' ? 'Qué bueno verte' : 'Crea tu cuenta' }}</h2>
+      <p class="muted">
+        {{ loginMode() === 'login' ? 'Ingresa tus datos para continuar.' : 'Registra el acceso de tu equipo al panel.' }}
+      </p>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error" role="alert">{{ errorMessage() }}</div>
+      }
+      @if (successMessage()) {
+        <div class="alert alert-success" role="status">{{ successMessage() }}</div>
+      }
+
+      <form class="form-stack" (ngSubmit)="submit()">
+        @if (loginMode() === 'register') {
+          <label class="field">
+            <span>Nombre completo</span>
+            <input type="text" name="nombre" [(ngModel)]="form.nombre" placeholder="Ej. Alex Rivera" autocomplete="name" required />
+          </label>
+        }
+        <label class="field">
+          <span>Correo electrónico</span>
+          <input type="email" name="email" [(ngModel)]="form.email" placeholder="tu@correo.com" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" name="password" [(ngModel)]="form.password" placeholder="Mínimo 8 caracteres" [attr.autocomplete]="loginMode() === 'login' ? 'current-password' : 'new-password'" required minlength="8" />
+        </label>
+        <button class="button button-primary button-wide" type="submit" [disabled]="loading()">
+          @if (loading()) { <span class="spinner"></span> }
+          {{ loginMode() === 'login' ? 'Iniciar sesión' : 'Crear cuenta' }}
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        {{ loginMode() === 'login' ? '¿Aún no tienes cuenta?' : '¿Ya tienes una cuenta?' }}
+        <button type="button" class="text-button" (click)="toggleMode()">
+          {{ loginMode() === 'login' ? 'Regístrate' : 'Inicia sesión' }}
+        </button>
+      </p>
+      <p class="secure-note"><span aria-hidden="true">▣</span> Acceso protegido con autenticación segura</p>
+    </div>
+  </section>
+</main>

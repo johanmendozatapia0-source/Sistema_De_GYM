@@ -1,0 +1,48 @@
+<div class="page-heading">
+  <div><p class="eyebrow">COMUNIDAD GYMFIT</p><h1>Socios</h1><p class="muted">Administra los perfiles y el estado de tus socios.</p></div>
+  <button class="button button-outline" type="button" (click)="cargar()" [disabled]="loading()"><span>⟳</span> Actualizar</button>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+@if (successMessage()) { <div class="alert alert-success page-alert" role="status"><span>✓</span><p>{{ successMessage() }}</p></div> }
+
+<section class="panel">
+  <div class="panel-heading section-panel-heading">
+    <div><h2>Todos los socios <span class="count-badge">{{ socios().length }}</span></h2><p class="muted">Busca y administra los registros de tu comunidad.</p></div>
+    <button class="button button-primary" type="button" (click)="showForm.set(!showForm())"><span>＋</span> Nuevo socio</button>
+  </div>
+  @if (showForm()) {
+    <form class="inline-form" (ngSubmit)="guardar()">
+      <div class="form-heading"><div><h3>Registrar socio</h3><p>Completa la información básica del nuevo socio.</p></div><button class="icon-button" type="button" aria-label="Cerrar" (click)="showForm.set(false)">×</button></div>
+      <div class="form-grid">
+        <label class="field"><span>Nombres completos *</span><input name="memberName" [(ngModel)]="form.nombres" required placeholder="Nombre y apellidos" /></label>
+        <label class="field"><span>DNI</span><input name="memberDni" [(ngModel)]="form.dni" placeholder="Número de documento" /></label>
+        <label class="field"><span>Teléfono</span><input name="memberPhone" [(ngModel)]="form.telefono" placeholder="+51 999 000 000" /></label>
+        <label class="field"><span>Foto (URL)</span><input name="memberPhoto" [(ngModel)]="form.fotoUrl" type="url" placeholder="https://..." /></label>
+      </div>
+      <div class="form-actions"><button class="button button-outline" type="button" (click)="showForm.set(false)">Cancelar</button><button class="button button-primary" type="submit" [disabled]="loading()">Guardar socio</button></div>
+    </form>
+  }
+  @if (createdMemberCode()) { <div class="created-code">Código asignado: <strong>{{ createdMemberCode() }}</strong></div> }
+  <div class="table-toolbar">
+    <label class="search-field"><span>⌕</span><input name="searchSocio" [ngModel]="searchText()" (ngModelChange)="searchText.set($event)" placeholder="Buscar por nombre, código o DNI" /></label>
+    <span class="muted small">{{ filteredSocios().length }} resultados</span>
+  </div>
+  @if (filteredSocios().length) {
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>SOCIO</th><th>CÓDIGO</th><th>DNI</th><th>TELÉFONO</th><th>MEMBRESÍA HASTA</th><th>ESTADO</th></tr></thead>
+        <tbody>
+          @for (socio of filteredSocios(); track socio.id) {
+            <tr>
+              <td><div class="member-cell"><span class="mini-avatar">{{ socio.nombres.slice(0, 1).toUpperCase() }}</span><div><strong>{{ socio.nombres }}</strong><small>Desde {{ formatDate(socio.fechaRegistro) }}</small></div></div></td>
+              <td class="code-cell">{{ socio.codigoSocio }}</td><td>{{ socio.dni || '—' }}</td><td>{{ socio.telefono || '—' }}</td><td>{{ formatDate(socio.membresiaHasta) }}</td>
+              <td><span class="status-pill" [class.status-good]="socio.activo">{{ socio.activo ? 'Activo' : 'Inactivo' }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="empty-state"><span class="empty-icon">♧</span><strong>{{ searchText() ? 'No encontramos resultados' : 'Todavía no hay socios' }}</strong><p>{{ searchText() ? 'Prueba con otro nombre, código o DNI.' : 'Registra tu primer socio para empezar.' }}</p></div>
+  }
+</section>

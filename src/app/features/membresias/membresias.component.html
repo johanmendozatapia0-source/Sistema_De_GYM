@@ -1,0 +1,38 @@
+<div class="page-heading">
+  <div><p class="eyebrow">PLANES DEL GIMNASIO</p><h1>Membresías</h1><p class="muted">Gestiona los planes y precios que ofreces a tus socios.</p></div>
+  <button class="button button-outline" type="button" (click)="cargar()" [disabled]="loading()"><span>⟳</span> Actualizar</button>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+@if (successMessage()) { <div class="alert alert-success page-alert" role="status"><span>✓</span><p>{{ successMessage() }}</p></div> }
+<section class="panel">
+  <div class="panel-heading section-panel-heading">
+    <div><h2>Planes disponibles <span class="count-badge">{{ membresias().length }}</span></h2><p class="muted">Los planes que ofreces a tus socios.</p></div>
+    <button class="button button-primary" type="button" (click)="showForm.set(!showForm())"><span>＋</span> Crear plan</button>
+  </div>
+  @if (showForm()) {
+    <form class="inline-form" (ngSubmit)="guardar()">
+      <div class="form-heading"><div><h3>Nuevo plan</h3><p>Define el precio y duración de la membresía.</p></div><button class="icon-button" type="button" aria-label="Cerrar" (click)="showForm.set(false)">×</button></div>
+      <div class="form-grid three-cols">
+        <label class="field"><span>Nombre del plan *</span><input name="planName" [(ngModel)]="form.nombre" required placeholder="Ej. Plan mensual" /></label>
+        <label class="field"><span>Duración (días) *</span><input name="planDuration" [(ngModel)]="form.duracionDias" type="number" min="1" required /></label>
+        <label class="field"><span>Precio (S/) *</span><input name="planPrice" [(ngModel)]="form.precio" type="number" min="0" step="0.01" required /></label>
+      </div>
+      <div class="form-actions"><button class="button button-outline" type="button" (click)="showForm.set(false)">Cancelar</button><button class="button button-primary" type="submit" [disabled]="loading()">Guardar plan</button></div>
+    </form>
+  }
+  @if (membresias().length) {
+    <div class="plan-grid">
+      @for (plan of membresias(); track plan.id) {
+        <article class="plan-card">
+          <div class="plan-top"><span class="plan-symbol">◈</span><span class="status-pill" [class.status-good]="plan.activa">{{ plan.activa ? 'Disponible' : 'Inactivo' }}</span></div>
+          <p class="plan-label">MEMBRESÍA</p><h3>{{ plan.nombre }}</h3>
+          <div class="plan-price">S/ {{ plan.precio | number:'1.2-2' }}<span> / {{ plan.duracionDias }} días</span></div>
+          <div class="plan-divider"></div>
+          <p class="muted"><span class="check-mark">✓</span> Vigencia de {{ plan.duracionDias }} días</p>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="empty-state"><span class="empty-icon">◈</span><strong>No hay planes creados</strong><p>Crea una membresía para comenzar a registrar pagos.</p></div>
+  }
+</section>

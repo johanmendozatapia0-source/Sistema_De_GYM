@@ -1,0 +1,32 @@
+<div class="page-heading">
+  <div><p class="eyebrow">EQUIPO GYMFIT</p><h1>Entrenadores</h1><p class="muted">Organiza al equipo que acompaña a tus socios.</p></div>
+  <button class="button button-outline" type="button" (click)="cargar()" [disabled]="loading()"><span>⟳</span> Actualizar</button>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+@if (successMessage()) { <div class="alert alert-success page-alert" role="status"><span>✓</span><p>{{ successMessage() }}</p></div> }
+<section class="panel">
+  <div class="panel-heading section-panel-heading">
+    <div><h2>Equipo de entrenadores <span class="count-badge">{{ entrenadores().length }}</span></h2><p class="muted">Las personas que inspiran y guían cada entrenamiento.</p></div>
+    <button class="button button-primary" type="button" (click)="showForm.set(!showForm())"><span>＋</span> Nuevo entrenador</button>
+  </div>
+  @if (showForm()) {
+    <form class="inline-form" (ngSubmit)="guardar()">
+      <div class="form-heading"><div><h3>Registrar entrenador</h3><p>Agrega los datos del nuevo miembro del equipo.</p></div><button class="icon-button" type="button" aria-label="Cerrar" (click)="showForm.set(false)">×</button></div>
+      <div class="form-grid three-cols">
+        <label class="field"><span>Nombre completo *</span><input name="trainerName" [(ngModel)]="form.nombres" required /></label>
+        <label class="field"><span>Especialidad *</span><input name="trainerSpecialty" [(ngModel)]="form.especialidad" required placeholder="Ej. Fuerza y acondicionamiento" /></label>
+        <label class="field"><span>Teléfono</span><input name="trainerPhone" [(ngModel)]="form.telefono" /></label>
+      </div>
+      <div class="form-actions"><button class="button button-outline" type="button" (click)="showForm.set(false)">Cancelar</button><button class="button button-primary" type="submit" [disabled]="loading()">Guardar entrenador</button></div>
+    </form>
+  }
+  @if (entrenadores().length) {
+    <div class="people-grid">
+      @for (entrenador of entrenadores(); track entrenador.id) {
+        <article class="person-card"><div class="person-avatar">{{ entrenador.nombres.slice(0, 1).toUpperCase() }}</div><span class="person-role">ENTRENADOR</span><h3>{{ entrenador.nombres }}</h3><p>{{ entrenador.especialidad }}</p><div class="person-contact">☎ {{ entrenador.telefono || 'Sin teléfono' }}</div></article>
+      }
+    </div>
+  } @else {
+    <div class="empty-state"><span class="empty-icon">♙</span><strong>Aún no hay entrenadores</strong><p>Agrega a tu primer entrenador para organizar el equipo.</p></div>
+  }
+</section>

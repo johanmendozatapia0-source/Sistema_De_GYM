@@ -1,0 +1,28 @@
+<div class="page-heading">
+  <div><p class="eyebrow">RECEPCIÓN</p><h1>Control de acceso</h1><p class="muted">Verifica en segundos si un socio puede ingresar.</p></div>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+<div class="access-layout">
+  <section class="panel access-panel">
+    <div class="access-badge">↗</div><p class="eyebrow">RECEPCIÓN</p><h2>Validar ingreso</h2>
+    <p class="muted">Escribe el código de socio para comprobar si su membresía está vigente.</p>
+    <form class="access-form" (ngSubmit)="validar()">
+      <label class="field"><span>Código de socio</span><input name="accessCode" [(ngModel)]="codigoSocio" placeholder="Ej. GF-0001" required autofocus /></label>
+      <button class="button button-primary button-wide" type="submit" [disabled]="loading()">Validar acceso <span>→</span></button>
+    </form>
+  </section>
+  <section class="panel access-result" [class.has-result]="resultado()">
+    @if (resultado(); as result) {
+      <div class="result-status" [class.denied]="!result.accesoPermitido">
+        <span class="result-status-icon">{{ result.accesoPermitido ? '✓' : '×' }}</span>
+        <p class="eyebrow">{{ result.accesoPermitido ? 'INGRESO AUTORIZADO' : 'INGRESO DENEGADO' }}</p>
+        <h2>{{ result.accesoPermitido ? '¡Adelante!' : 'No es posible ingresar' }}</h2>
+        <p class="muted">{{ result.motivo }}</p>
+        <div class="access-member"><span class="mini-avatar">{{ result.nombres.slice(0, 1).toUpperCase() }}</span><div><strong>{{ result.nombres }}</strong><small>{{ result.codigoSocio }}</small></div></div>
+        <small class="result-time">{{ result.fechaHora | date:'short' }}</small>
+      </div>
+    } @else {
+      <div class="empty-access"><span class="scan-icon">⌗</span><h3>Esperando validación</h3><p>El resultado del acceso aparecerá aquí.</p></div>
+    }
+  </section>
+</div>

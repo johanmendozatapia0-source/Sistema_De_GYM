@@ -1,59 +1,41 @@
-# SistemaDeGYM
+# GymFit
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+Frontend Angular para administrar socios, membresías, pagos, accesos, entrenadores y rutinas.
 
-## Development server
+## Desarrollo
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Inicia la API en `http://localhost:8080` y luego ejecuta:
 
 ```bash
-ng generate component component-name
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Abre `http://localhost:4200`. Para compilar y ejecutar las pruebas:
 
 ```bash
-ng generate --help
+npm run build
+npm run test -- --watch=false
 ```
 
-## Building
+La URL base de la API se configura en `src/environment/environment.ts`.
 
-To build the project run:
+## Organización
 
-```bash
-ng build
+```text
+src/
+├── app/
+│   ├── core/
+│   │   ├── guards/          # Protección de rutas
+│   │   ├── interceptors/    # Token JWT para solicitudes protegidas
+│   │   ├── models/          # Modelos por dominio
+│   │   ├── services/        # Servicios HTTP por dominio
+│   │   └── utils/           # Utilidades comunes
+│   ├── features/            # Pantallas independientes con carga diferida
+│   ├── shared/              # Componentes comunes, como la navegación
+│   ├── app.config.ts        # Configuración global de Angular
+│   └── app.routes.ts        # Rutas del sistema
+└── environment/
+    └── environment.ts       # Configuración del backend
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Cada pantalla vive en su carpeta bajo `features` y mantiene su plantilla y lógica en archivos separados. Los modelos y servicios reutilizables se ubican en `core`; los componentes compartidos, en `shared`.

@@ -1,0 +1,37 @@
+<div class="page-heading">
+  <div><p class="eyebrow">ENTRENAMIENTO</p><h1>Rutinas</h1><p class="muted">Crea y administra los planes de entrenamiento.</p></div>
+  <button class="button button-outline" type="button" (click)="cargar()" [disabled]="loading()"><span>⟳</span> Actualizar</button>
+</div>
+@if (errorMessage()) { <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div> }
+@if (successMessage()) { <div class="alert alert-success page-alert" role="status"><span>✓</span><p>{{ successMessage() }}</p></div> }
+<section class="panel">
+  <div class="panel-heading section-panel-heading">
+    <div><h2>Biblioteca de rutinas <span class="count-badge">{{ rutinas().length }}</span></h2><p class="muted">Programas para que cada socio alcance su siguiente meta.</p></div>
+    <button class="button button-primary" type="button" (click)="showForm.set(!showForm())"><span>＋</span> Nueva rutina</button>
+  </div>
+  @if (showForm()) {
+    <form class="inline-form" (ngSubmit)="guardar()">
+      <div class="form-heading"><div><h3>Crear rutina</h3><p>Configura el objetivo y la duración del plan.</p></div><button class="icon-button" type="button" aria-label="Cerrar" (click)="showForm.set(false)">×</button></div>
+      <div class="form-grid three-cols">
+        <label class="field"><span>Título *</span><input name="routineTitle" [(ngModel)]="form.titulo" required /></label>
+        <label class="field"><span>Duración (semanas) *</span><input name="routineDuration" [(ngModel)]="form.duracionSemanas" type="number" min="1" required /></label>
+        <label class="field"><span>Nivel *</span><select name="routineLevel" [(ngModel)]="form.nivel"><option>Principiante</option><option>Intermedio</option><option>Avanzado</option></select></label>
+        <label class="field"><span>Imagen (URL)</span><input name="routineImage" [(ngModel)]="form.imagenUrl" type="url" placeholder="https://..." /></label>
+        <label class="field"><span>Entrenador</span><select name="routineTrainer" [(ngModel)]="form.entrenadorId"><option [ngValue]="undefined">Sin asignar</option>@for (entrenador of entrenadores(); track entrenador.id) { <option [ngValue]="entrenador.id">{{ entrenador.nombres }}</option> }</select></label>
+      </div>
+      <div class="form-actions"><button class="button button-outline" type="button" (click)="showForm.set(false)">Cancelar</button><button class="button button-primary" type="submit" [disabled]="loading()">Guardar rutina</button></div>
+    </form>
+  }
+  @if (rutinas().length) {
+    <div class="routine-grid">
+      @for (rutina of rutinas(); track rutina.id) {
+        <article class="routine-card">
+          @if (rutina.imagenUrl) { <img class="routine-image" [src]="rutina.imagenUrl" [alt]="'Imagen de ' + rutina.titulo" /> } @else { <div class="routine-image routine-placeholder"><span>✦</span></div> }
+          <div class="routine-body"><span class="level-tag">{{ rutina.nivel }}</span><h3>{{ rutina.titulo }}</h3><p class="muted">{{ rutina.duracionSemanas }} semanas</p><div class="routine-trainer">{{ nombreEntrenador(rutina.entrenadorId) }}</div></div>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="empty-state"><span class="empty-icon">▤</span><strong>No hay rutinas todavía</strong><p>Crea un plan de entrenamiento para tus socios.</p></div>
+  }
+</section>

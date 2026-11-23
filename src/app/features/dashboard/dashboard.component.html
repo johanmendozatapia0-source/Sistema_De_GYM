@@ -1,0 +1,66 @@
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">PANEL DE CONTROL</p>
+    <h1>Resumen</h1>
+    <p class="muted">Aquí tienes el resumen de actividad de tu gimnasio.</p>
+  </div>
+  <button class="button button-outline" type="button" (click)="cargar()" [disabled]="loading()">
+    <span aria-hidden="true">⟳</span> Actualizar
+  </button>
+</div>
+
+@if (errorMessage()) {
+  <div class="alert alert-error page-alert" role="alert"><span>!</span><p>{{ errorMessage() }}</p></div>
+}
+
+<div class="stats-grid">
+  <article class="stat-card">
+    <div class="stat-top"><span class="stat-icon mint">♧</span><span class="stat-caption">AL DÍA</span></div>
+    <p>Socios activos</p><strong>{{ resumen()?.sociosActivos ?? '—' }}</strong>
+    <span class="stat-foot">Membresías vigentes</span>
+  </article>
+  <article class="stat-card">
+    <div class="stat-top"><span class="stat-icon peach">S/</span><span class="stat-caption">ESTE MES</span></div>
+    <p>Ingresos del mes</p>
+    <strong>{{ resumen() ? ('S/ ' + (resumen()?.ingresosMes | number:'1.2-2')) : '—' }}</strong>
+    <span class="stat-foot">Pagos registrados</span>
+  </article>
+  <article class="stat-card">
+    <div class="stat-top"><span class="stat-icon lilac">↗</span><span class="stat-caption">ÚLTIMOS 7 DÍAS</span></div>
+    <p>Asistencias</p><strong>{{ resumen()?.asistenciasSemana ?? '—' }}</strong>
+    <span class="stat-foot">Entrenamientos esta semana</span>
+  </article>
+</div>
+
+<div class="dashboard-grid">
+  <section class="panel recent-panel">
+    <div class="panel-heading">
+      <div><h2>Socios recientes</h2><p class="muted">La comunidad que sigue creciendo</p></div>
+      <a class="text-button" routerLink="/socios">Ver todos <span>→</span></a>
+    </div>
+    @if (socios().length) {
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>SOCIO</th><th>CÓDIGO</th><th>ESTADO</th></tr></thead>
+          <tbody>
+            @for (socio of socios().slice(0, 5); track socio.id) {
+              <tr>
+                <td><div class="member-cell"><span class="mini-avatar">{{ socio.nombres.slice(0, 1).toUpperCase() }}</span><div><strong>{{ socio.nombres }}</strong><small>Registrado {{ formatDate(socio.fechaRegistro) }}</small></div></div></td>
+                <td class="code-cell">{{ socio.codigoSocio }}</td>
+                <td><span class="status-pill" [class.status-good]="socio.activo">{{ socio.activo ? 'Activo' : 'Inactivo' }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state"><span class="empty-icon">♧</span><strong>Aún no hay socios</strong><p>Cuando registres socios, aparecerán aquí.</p></div>
+    }
+  </section>
+  <section class="panel quick-panel">
+    <div class="panel-heading"><div><h2>Accesos rápidos</h2><p class="muted">Lo que más necesitas, a mano</p></div></div>
+    <a class="quick-link" routerLink="/socios"><span class="quick-icon mint">＋</span><span><strong>Registrar socio</strong><small>Agrega a alguien nuevo</small></span><b>→</b></a>
+    <a class="quick-link" routerLink="/pagos"><span class="quick-icon peach">S/</span><span><strong>Registrar pago</strong><small>Renueva una membresía</small></span><b>→</b></a>
+    <a class="quick-link" routerLink="/acceso"><span class="quick-icon lilac">↗</span><span><strong>Validar ingreso</strong><small>Revisa un código de socio</small></span><b>→</b></a>
+  </section>
+</div>
